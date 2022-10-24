@@ -8,6 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="selenide-junit5-archetype" />
         <module name="my-test" />
+        <module name="my1test" />
       </profile>
     </annotationProcessing>
   </component>

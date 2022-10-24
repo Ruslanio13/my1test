@@ -1,4 +1,3 @@
-import dev.failsafe.internal.util.Assert;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 
@@ -8,29 +7,39 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class MainTest {
 
-
+    LoginPage loginPage = new LoginPage();
+    UserPage userPage = new UserPage();
     @Test
     void userCanLogin()
     {
-        LoginPage loginPage = new LoginPage();
-        loginPage.login("ruslanio@mail.com", "IlovePolytech", "Руслан Cупонькин", false);
-        loginPage.login("rusik.03@mail.ru", "Technopolis", "Руслан Cупонькин", true);
+        tryToLogin("technoPol181", "technoPolis20228", "technoPol18 technoPol118", false);
+        tryToLogin("technoPol18", "technoPolis2022", "technoPol18 technoPol18", true);
+    }
+
+    private void tryToLogin(String email, String password, String usersFullName, boolean expectedResult){
+        open("https://ok.ru");
+        loginPage.login(email, password);
+        userPage.checkUsersName(usersFullName, expectedResult);
+        clearBrowserCookies();
     }
 }
 
 class LoginPage
 {
-
-    public void login(String email, String password, String expectedUsername, boolean expectedResult)
+    public void login(String email, String password)
     {
-        final String nameOfErrorDiv = "//div[@class='input-e login_error']";
-        final String error = "Неправильно указан логин и/или пароль";
-
-        open("https://ok.ru");
-
         $(By.xpath("//*[@id='field_email']")).setValue(email);
         $(By.xpath("//*[@id='field_password']")).setValue(password);
         $(By.xpath("//*[@value='Войти в Одноклассники']")).click();
-        assertEquals(error, $(By.xpath(nameOfErrorDiv)).text());
+    }
+}
+
+class UserPage{
+    public void checkUsersName(String usersFullName, boolean expectedResult){
+        if ($$(By.xpath("//*[@class = 'tico ellip']")).size() == 0)
+            assertFalse(expectedResult);
+        else
+            assertEquals(usersFullName, $(By.xpath("//*[@class = 'tico ellip']")).text());
+        clearBrowserCookies();
     }
 }
